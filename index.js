@@ -5,25 +5,44 @@ require("dotenv").config();
 
 const bot = new Telegraf(process.env.TOKEN);
 
-bot.start(ctx => ctx.reply('Start...'));
-bot.help(ctx => ctx.reply('Help...'));
+bot.start((ctx) => {
+    ctx.replyWithMarkdown(`Hola _${ctx.update.message.from.username}_, este es un bot de demostración.\nPodés ver mis comandos disponibles escribiendo */comandos*
+              \nSi precisás tu propio bot de Telegram, podés ver las vías de contacto escribiendo */contacto*
+              \n*https://franciscososa.net/*`);
+}); 
+
 
 //#region COMANDOS PERSONALIZADOS
 
-function random(number){ return Math.floor(Math.random() * (number + 1)); }
+bot.command('comandos', (ctx) => {
+    ctx.replyWithMarkdown(`*/start*: información básica del bot.
+                         \n*/contacto*: muestra las vías de contacto.
+                         \n*/random <número>*: retorna un valor al azar entre 0 y el número escrito.
+                         \n*/imagen*: envía una imagen al azar.`)
+});
 
-bot.command('random', ctx => ctx.reply(random(100)));
+bot.command('contacto', (ctx) => {
+    ctx.replyWithMarkdown(`➡ *instagram*.franciscososa.net
+                         \n➡ *twitter*.franciscososa.net
+                         \n➡ *telegram*.franciscososa.net
+                         \n➡ *discord*.franciscososa.net
+                         \nhttps://franciscososa.net/#contacto`)
+});
 
-bot.command('advancerandom', ctx => {
+function random(number){ return Math.floor(Math.random() * (number +1)) };
+bot.command('random', ctx => {
     const message = ctx.update.message.text;
     const randomNumber = Number(message.split(' ')[1]);
 
-    if(isNaN(randomNumber) || randomNumber <= 0) return ctx.reply('Por favor, luego de /advancerandom escribe un numero mayor de 0.')
+    if(isNaN(randomNumber) || randomNumber <= 0) return ctx.reply('Luego de /random, escribir un número mayor a 0.')
     else return ctx.reply(random(randomNumber));
 
 });
 
-bot.command('sendphoto', ctx =>  ctx.replyWithPhoto({source: './src/img/res.png'}));
+
+bot.command('imagen', (ctx) => ctx.replyWithPhoto({ url: 'https://picsum.photos/200/300/?random' }));
+
+
 
 //#endregion
 
